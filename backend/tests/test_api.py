@@ -102,6 +102,7 @@ class TestPrompts:
         assert response.status_code == 200
         data = response.json()
         assert data["title"] == "Updated Title"
+        assert data["updated_at"] != original_updated_at
         
         # NOTE: This assertion will fail due to Bug #2!
         # The updated_at should be different from original
