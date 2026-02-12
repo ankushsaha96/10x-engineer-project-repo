@@ -1,167 +1,147 @@
 # PromptLab
 
-**Your AI Prompt Engineering Platform**
+PromptLab is a full-stack application for managing and engineering AI prompts. It provides a backend API and a React-based frontend to create, organize, and test prompts for various AI models.
 
----
+## Project Overview and Purpose
 
-## Welcome to the Team! 👋
+This project is designed to be a comprehensive platform for prompt engineers and developers working with AI. It allows users to:
+- Create and store AI prompts.
+- Organize prompts into collections.
+- Search and filter prompts.
+- Version and iterate on prompts. (Future feature)
+- Test prompts against different models. (Future feature)
 
-Congratulations on joining the PromptLab engineering team! You've been brought on to help us build the next generation of prompt engineering tools.
+The goal is to provide a robust and user-friendly tool to streamline the prompt engineering workflow.
 
-### What is PromptLab?
+## Features
 
-PromptLab is an internal tool for AI engineers to **store, organize, and manage their prompts**. Think of it as a "Postman for Prompts" — a professional workspace where teams can:
+- **Prompt Management:** Full CRUD (Create, Read, Update, Delete) operations for prompts.
+- **Collection Management:** Organize prompts into collections.
+- **Search:** Full-text search for prompts by title and content.
+- **Filtering:** Filter prompts by collection.
+- **Health Check:** An endpoint to verify API status.
+- **CORS Enabled:** Ready for frontend integration.
 
-- 📝 Store prompt templates with variables (`{{input}}`, `{{context}}`)
-- 📁 Organize prompts into collections
-- 🏷️ Tag and search prompts
-- 📜 Track version history
-- 🧪 Test prompts with sample inputs
-
-### The Current Situation
-
-The previous developer left us with a *partially working* backend. The core structure is there, but:
-
-- There are **several bugs** that need fixing
-- Some **features are incomplete**
-- The **documentation is minimal** (you'll fix that)
-- There are **no tests** worth mentioning
-- **No CI/CD pipeline** exists
-- **No frontend** has been built yet
-
-Your job over the next 4 weeks is to transform this into a **production-ready, full-stack application**.
-
----
-
-## Quick Start
+## Prerequisites and Installation
 
 ### Prerequisites
 
 - Python 3.10+
-- Node.js 18+ (for Week 4)
-- Git
+- [Poetry](https://python-poetry.org/) for managing Python dependencies (optional but recommended)
+- Node.js 18+ and npm (for frontend)
+- Docker and Docker Compose (for containerized setup)
 
-### Run Locally
+### Installation
 
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/your-username/promptlab.git
+    cd promptlab
+    ```
+
+2.  **Backend Setup:**
+    ```bash
+    cd backend
+    pip install -r requirements.txt
+    ```
+
+3.  **Frontend Setup:**
+    ```bash
+    cd ../frontend
+    npm install
+    ```
+
+## Quick Start Guide
+
+### Running the Backend
+
+1.  Navigate to the `backend` directory:
+    ```bash
+    cd backend
+    ```
+
+2.  Start the FastAPI server:
+    ```bash
+    python main.py
+    ```
+    The API will be available at `http://localhost:8000`. You can access the OpenAPI documentation at `http://localhost:8000/docs`.
+
+### Running the Frontend
+
+1.  Navigate to the `frontend` directory:
+    ```bash
+    cd frontend
+    ```
+
+2.  Start the React development server:
+    ```bash
+    npm run dev
+    ```
+    The frontend will be available at `http://localhost:5173`.
+
+### Using Docker
+
+You can also run the entire application using Docker Compose.
+
+1.  Ensure Docker is running.
+2.  From the project root, run:
+    ```bash
+    docker-compose up --build
+    ```
+    This will build the containers and start both the backend and frontend services.
+
+## API Endpoint Summary
+
+All endpoints are prefixed with `/`.
+
+| Method | Endpoint | Description | Example Request Body/Params |
+| --- | --- | --- | --- |
+| `GET` | `/health` | Check API health | |
+| `GET` | `/prompts` | List all prompts | `?collection_id=<id>&search=<query>` |
+| `POST` | `/prompts` | Create a new prompt | `{ "title": "...", "content": "..." }` |
+| `GET` | `/prompts/{prompt_id}` | Get a single prompt | |
+| `PUT` | `/prompts/{prompt_id}` | Update a prompt | `{ "title": "...", "content": "..." }` |
+| `PATCH`| `/prompts/{prompt_id}` | Partially update a prompt | `{ "title": "..." }` |
+| `DELETE`| `/prompts/{prompt_id}` | Delete a prompt | |
+| `GET` | `/collections`| List all collections | |
+| `POST` | `/collections`| Create a new collection | `{ "name": "..." }` |
+| `GET` | `/collections/{collection_id}` | Get a single collection | |
+| `DELETE`| `/collections/{collection_id}` | Delete a collection | |
+
+### Example cURL Requests
+
+**Create a prompt:**
 ```bash
-# Clone the repo
-git clone <your-repo-url>
-cd promptlab
-
-# Set up backend
-cd backend
-pip install -r requirements.txt
-python main.py
+curl -X POST "http://localhost:8000/prompts" -H "Content-Type: application/json" -d '{"title": "My first prompt", "content": "Generate a summary of..."}'
 ```
 
-API runs at: http://localhost:8000
+**Get all prompts:**
+```bash
+curl "http://localhost:8000/prompts"
+```
 
-API docs at: http://localhost:8000/docs
+## Development Setup
 
-### Run Tests
+This project is set up to use Visual Studio Code Dev Containers for a consistent development environment.
 
+1.  Install the [Remote - Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension in VS Code.
+2.  Open the project folder in VS Code.
+3.  When prompted, click "Reopen in Container".
+
+This will build the development container with all the necessary dependencies and configurations.
+
+## Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1.  Fork the repository.
+2.  Create a new branch: `git checkout -b feature/your-feature-name`
+3.  Make your changes and commit them: `git commit -m 'Add some feature'`
+4.  Push to the branch: `git push origin feature/your-feature-name`
+5.  Submit a pull request.
+
+Please make sure to update tests as appropriate. You can run tests with `pytest` in the `backend` directory.
 ```bash
 cd backend
-pytest tests/ -v
+pytest
 ```
-
----
-
-## Project Structure
-
-```
-promptlab/
-├── README.md                    # You are here
-├── PROJECT_BRIEF.md             # Your assignment details
-├── GRADING_RUBRIC.md            # How you'll be graded
-│
-├── backend/
-│   ├── app/
-│   │   ├── __init__.py
-│   │   ├── api.py              # FastAPI routes (has bugs!)
-│   │   ├── models.py           # Pydantic models
-│   │   ├── storage.py          # In-memory storage
-│   │   └── utils.py            # Helper functions
-│   ├── tests/
-│   │   ├── __init__.py
-│   │   ├── test_api.py         # Basic tests
-│   │   └── conftest.py         # Test fixtures
-│   ├── main.py                 # Entry point
-│   └── requirements.txt
-│
-├── frontend/                    # You'll create this in Week 4
-├── specs/                       # You'll create this in Week 2
-├── docs/                        # You'll create this in Week 2
-└── .github/                     # You'll set up CI/CD in Week 3
-```
-
----
-
-## Your Mission
-
-### 🧪 Experimentation Encouraged!
-While we provide guidelines, **you are the engineer**. If you see a better way to solve a problem using AI, do it!
-- Want to swap the storage layer for a real database? **Go for it.**
-- Want to add Authentication? **Do it.**
-- Want to rewrite the API in a different style? **As long as tests pass, you're clear.**
-
-The goal is to learn how to build *better* software *faster* with AI. Don't be afraid to break things and rebuild them better.
-
-### Week 1: Fix the Backend
-- Understand this codebase using AI
-- Find and fix the bugs
-- Implement missing features
-
-### Week 2: Document Everything
-- Write proper documentation
-- Create feature specifications
-- Set up coding standards
-
-### Week 3: Make it Production-Ready
-- Write comprehensive tests
-- Implement new features with TDD
-- Set up CI/CD and Docker
-
-### Week 4: Build the Frontend
-- Create a React frontend
-- Connect it to the backend
-- Polish the user experience
-
----
-
-## API Endpoints (Current)
-
-| Method | Endpoint | Description | Status |
-|--------|----------|-------------|--------|
-| GET | `/health` | Health check | ✅ Works |
-| GET | `/prompts` | List all prompts | ⚠️ Has issues |
-| GET | `/prompts/{id}` | Get single prompt | ❌ Bug |
-| POST | `/prompts` | Create prompt | ✅ Works |
-| PUT | `/prompts/{id}` | Update prompt | ⚠️ Has issues |
-| DELETE | `/prompts/{id}` | Delete prompt | ✅ Works |
-| GET | `/collections` | List collections | ✅ Works |
-| GET | `/collections/{id}` | Get collection | ✅ Works |
-| POST | `/collections` | Create collection | ✅ Works |
-| DELETE | `/collections/{id}` | Delete collection | ❌ Bug |
-
----
-
-## Tech Stack
-
-- **Backend**: Python 3.10+, FastAPI, Pydantic
-- **Frontend**: React, Vite (Week 4)
-- **Testing**: pytest
-- **DevOps**: Docker, GitHub Actions (Week 3)
-
----
-
-## Need Help?
-
-1. **Use AI tools** — This is an AI-assisted coding course!
-2. Read the `PROJECT_BRIEF.md` for detailed instructions
-3. Check `GRADING_RUBRIC.md` to understand expectations
-4. Ask questions in the course forum
-
----
-
-Good luck, and welcome to the team! 🚀
