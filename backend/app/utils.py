@@ -16,10 +16,33 @@ def sort_prompts_by_date(prompts: List[Prompt], descending: bool = True) -> List
 
 
 def filter_prompts_by_collection(prompts: List[Prompt], collection_id: str) -> List[Prompt]:
+    """Filters a list of Prompt objects by collection ID.
+
+    Args:
+        prompts (List[Prompt]): A list of Prompt objects to be filtered.
+        collection_id (str): The ID of the collection to filter prompts by.
+
+    Returns:
+        List[Prompt]: A list of Prompt objects that belong to the specified collection.
+
+    Example usage:
+        filter_prompts_by_collection(all_prompts, 'collection_123')
+    """
     return [p for p in prompts if p.collection_id == collection_id]
 
 
 def search_prompts(prompts: List[Prompt], query: str) -> List[Prompt]:
+    """Searches through a list of Prompt objects and returns those that match the query.
+
+    Args:
+        prompts (List[Prompt]): A list of Prompt objects to search through.
+        query (str): The search query to filter prompts by.
+    Returns:
+        List[Prompt]: A list of Prompt objects that match the search query in their title or description.
+
+    Example usage:
+        search_prompts(all_prompts, 'keyword')
+    """
     query_lower = query.lower()
     return [
         p for p in prompts 
