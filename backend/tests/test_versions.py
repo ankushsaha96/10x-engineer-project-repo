@@ -1,4 +1,4 @@
-from app.models import Prompt, PromptVersion
+from app.models import Prompt
 from app.storage import storage
 
 def test_create_prompt_creates_initial_version():
