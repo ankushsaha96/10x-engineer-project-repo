@@ -55,7 +55,6 @@ def health_check():
         {"status": "healthy", "version": "1.0.0"}
     """
     return HealthResponse(status="healthy", version=__version__)
-
 # ============== Prompt Endpoints ==============
 
 @app.get("/prompts", response_model=PromptList)
