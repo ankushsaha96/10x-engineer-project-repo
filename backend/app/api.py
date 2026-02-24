@@ -60,7 +60,8 @@ def health_check():
 @app.get("/prompts", response_model=PromptList)
 def list_prompts(
     collection_id: Optional[str] = None,
-    search: Optional[str] = None
+    search: Optional[str] = None,
+    tags: Optional[str] = None
 ):
     """
     Retrieves a list of prompts with optional filtering by collection and search query.
@@ -68,12 +69,13 @@ def list_prompts(
     Args:
         collection_id (Optional[str]): The ID of the collection to filter prompts.
         search (Optional[str]): A search query to filter prompts containing the term.
+        tags (Optional[str]): A comma-separated list of tags to filter prompts.
 
     Returns:
         PromptList: A list of prompts filtered and sorted by date.
 
     Example usage:
-        >>> list_prompts(collection_id="123", search="example query")
+        >>> list_prompts(collection_id="123", search="example query", tags="tag1,tag2")
     """
     prompts = storage.get_all_prompts()
     
@@ -84,6 +86,11 @@ def list_prompts(
     # Search if query provided
     if search:
         prompts = search_prompts(prompts, search)
+
+    # Filter by tags if specified
+    if tags:
+        tag_list = [tag.strip() for tag in tags.split(",")]
+        prompts = [p for p in prompts if all(tag in p.tags for tag in tag_list)]
     
     # Sort by date (newest first)
     # Note: There might be an issue with the sorting...

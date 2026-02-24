@@ -5,7 +5,7 @@ In a production environment, this would be replaced with a database.
 """
 
 from typing import Dict, List, Optional
-from app.models import Prompt, Collection
+from app.models import Prompt, Collection, PromptVersion
 
 
 class Storage:
@@ -18,12 +18,14 @@ class Storage:
     Attributes:
         _prompts: A dictionary storing Prompt objects keyed by their IDs.
         _collections: A dictionary storing Collection objects keyed by their IDs.
+        _prompt_versions: A dictionary storing lists of PromptVersion objects keyed by their prompt IDs.
     """
 
     def __init__(self):
         """Initializes the storage with empty prompts and collections."""
         self._prompts: Dict[str, Prompt] = {}
         self._collections: Dict[str, Collection] = {}
+        self._prompt_versions: Dict[str, List[PromptVersion]] = {}
     
     # ============== Prompt Operations ==============
     
@@ -40,6 +42,13 @@ class Storage:
             storage.create_prompt(prompt)
         """
         self._prompts[prompt.id] = prompt
+        # Create initial version
+        version = PromptVersion(
+            prompt_id=prompt.id,
+            version=1,
+            content=prompt.content
+        )
+        self.create_prompt_version(version)
         return prompt
     
     def get_prompt(self, prompt_id: str) -> Optional[Prompt]:
@@ -81,7 +90,22 @@ class Storage:
         """
         if prompt_id not in self._prompts:
             return None
+        
+        # Get the current prompt to access latest_version
+        current_prompt = self._prompts[prompt_id]
+        new_version_number = current_prompt.latest_version + 1
+
+        # Update the prompt's latest_version
+        prompt.latest_version = new_version_number
         self._prompts[prompt_id] = prompt
+
+        # Create a new version
+        version = PromptVersion(
+            prompt_id=prompt.id,
+            version=new_version_number,
+            content=prompt.content
+        )
+        self.create_prompt_version(version)
         return prompt
     
     def delete_prompt(self, prompt_id: str) -> bool:
@@ -98,8 +122,34 @@ class Storage:
         """
         if prompt_id in self._prompts:
             del self._prompts[prompt_id]
+            if prompt_id in self._prompt_versions:
+                del self._prompt_versions[prompt_id]
             return True
         return False
+
+    # ============== Prompt Version Operations ==============
+    def create_prompt_version(self, version: PromptVersion) -> PromptVersion:
+        """Creates a new prompt version and adds it to storage.
+
+        Args:
+            version: A PromptVersion object to be added.
+        Returns:
+            The added PromptVersion object.
+        """
+        if version.prompt_id not in self._prompt_versions:
+            self._prompt_versions[version.prompt_id] = []
+        self._prompt_versions[version.prompt_id].append(version)
+        return version
+
+    def get_prompt_versions(self, prompt_id: str) -> List[PromptVersion]:
+        """Retrieves all versions of a prompt by its ID.
+
+        Args:
+            prompt_id: The ID of the prompt to retrieve versions for.
+        Returns:
+            A list of all PromptVersion objects for the given prompt ID.
+        """
+        return self._prompt_versions.get(prompt_id, [])
     
     # ============== Collection Operations ==============
     def create_collection(self, collection: Collection) -> Collection:
@@ -184,6 +234,8 @@ class Storage:
         """
         self._prompts.clear()
         self._collections.clear()
+        self._prompt_versions.clear()
+
 
 
 # Global storage instance

@@ -135,6 +135,42 @@ class TestPrompts:
         assert data["title"] == "Patched Title" # Should not change
         assert data["description"] == "Patched Description"
     
+    def test_create_prompt_with_tags(self, client: TestClient, sample_prompt_data):
+        prompt_data = {**sample_prompt_data, "tags": ["test", "pytest"]}
+        response = client.post("/prompts", json=prompt_data)
+        assert response.status_code == 201
+        data = response.json()
+        assert data["tags"] == ["test", "pytest"]
+
+    def test_list_prompts_by_tags(self, client: TestClient, sample_prompt_data):
+        # Create a prompt with tags
+        prompt_data_1 = {**sample_prompt_data, "title": "Tagged Prompt 1", "tags": ["tag1", "tag2"]}
+        client.post("/prompts", json=prompt_data_1)
+
+        # Create another prompt with different tags
+        prompt_data_2 = {**sample_prompt_data, "title": "Tagged Prompt 2", "tags": ["tag3"]}
+        client.post("/prompts", json=prompt_data_2)
+
+        # List prompts filtered by tag1
+        response = client.get("/prompts?tags=tag1")
+        assert response.status_code == 200
+        data = response.json()
+        assert len(data["prompts"]) == 1
+        assert data["prompts"][0]["title"] == "Tagged Prompt 1"
+
+        # List prompts filtered by multiple tags (AND condition)
+        response = client.get("/prompts?tags=tag1,tag2")
+        assert response.status_code == 200
+        data = response.json()
+        assert len(data["prompts"]) == 1
+        assert data["prompts"][0]["title"] == "Tagged Prompt 1"
+
+        # List prompts filtered by a tag that doesn't exist
+        response = client.get("/prompts?tags=tag4")
+        assert response.status_code == 200
+        data = response.json()
+        assert len(data["prompts"]) == 0
+    
     def test_sorting_order(self, client: TestClient):
         """Test that prompts are sorted newest first.
         

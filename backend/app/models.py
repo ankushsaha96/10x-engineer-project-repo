@@ -51,6 +51,7 @@ class PromptBase(BaseModel):
         content (str): Content of the prompt, must have at least 1 character.
         description (Optional[str]): Optional description of the prompt, up to 500 characters.
         collection_id (Optional[str]): Optional ID for the collection the prompt belongs to.
+        tags (List[str]): A list of tags for the prompt.
 
     Example:
         prompt = PromptBase(title="Sample Title", content="This is a sample.", description="A brief description.")
@@ -59,10 +60,11 @@ class PromptBase(BaseModel):
     content: str = Field(..., min_length=1)
     description: Optional[str] = Field(None, max_length=500)
     collection_id: Optional[str] = None
+    tags: List[str] = Field(default_factory=list)
 
 
 class PromptCreate(PromptBase):
-    pass
+    tags: List[str] = Field(default_factory=list)
 
 
 class PromptUpdate(PromptBase):
@@ -107,20 +109,42 @@ class Prompt(PromptBase):
         id (str): Unique identifier for the prompt, generated automatically.
         created_at (datetime): Timestamp when the prompt was created, set by default.
         updated_at (datetime): Timestamp for the last update to the prompt, set by default.
+        latest_version (int): The latest version number of the prompt.
 
     Example:
         prompt = Prompt(
             id="1234abcd",
             created_at=datetime.now(),
             updated_at=datetime.now(),
+            latest_version=1,
         )
     """
     id: str = Field(default_factory=generate_id)
     created_at: datetime = Field(default_factory=get_current_time)
     updated_at: datetime = Field(default_factory=get_current_time)
+    latest_version: int = 1
 
     class Config:
         from_attributes = True
+
+
+# ============== Prompt Version Models ==============
+
+class PromptVersion(BaseModel):
+    """Model representing a version of a prompt.
+
+    Attributes:
+        id (str): Unique identifier for the version.
+        prompt_id (str): The ID of the prompt this version belongs to.
+        version (int): The version number.
+        content (str): The content of the prompt at this version.
+        created_at (datetime): Timestamp when this version was created.
+    """
+    id: str = Field(default_factory=generate_id)
+    prompt_id: str
+    version: int
+    content: str
+    created_at: datetime = Field(default_factory=get_current_time)
 
 
 # ============== Collection Models ==============
@@ -159,6 +183,25 @@ class Collection(CollectionBase):
 
     class Config:
         from_attributes = True
+
+
+# ============== Tag Models ==============
+
+class Tag(BaseModel):
+    """Model representing a tag.
+
+    Attributes:
+        id (str): Unique identifier for the tag.
+        name (str): The tag name.
+    """
+    id: str = Field(default_factory=generate_id)
+    name: str = Field(..., min_length=1, max_length=100)
+
+
+class PromptTag(BaseModel):
+    """Model representing the association between a prompt and a tag."""
+    prompt_id: str
+    tag_id: str
 
 
 # ============== Response Models ==============

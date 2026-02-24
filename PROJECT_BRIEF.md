@@ -55,25 +55,25 @@ Use AI to explore and understand:
 **Problem**: When requesting a prompt that doesn't exist, the API returns a 500 Internal Server Error instead of a 404 Not Found.
 
 **Your job**: 
-- [ ] Locate the bug in the code
-- [ ] Fix it to return proper 404 response
-- [ ] Ensure the test passes
+- [x] Locate the bug in the code
+- [x] Fix it to return proper 404 response
+- [x] Ensure the test passes
 
 #### Task 1.3: Fix Bug #2 - PUT Doesn't Update Timestamp
 **Problem**: When updating a prompt via PUT, the `updated_at` field doesn't change.
 
 **Your job**:
-- [ ] Find where updates are handled
-- [ ] Ensure `updated_at` is set to current time on update
-- [ ] Verify with a test
+- [x] Find where updates are handled
+- [x] Ensure `updated_at` is set to current time on update
+- [x] Verify with a test
 
 #### Task 1.4: Fix Bug #3 - Sorting is Backwards
 **Problem**: `GET /prompts` should return newest prompts first, but it's returning oldest first.
 
 **Your job**:
-- [ ] Find the sorting logic
-- [ ] Fix the sort order
-- [ ] Verify the change works
+- [x] Find the sorting logic
+- [x] Fix the sort order
+- [x] Verify the change works
 
 #### Task 1.5: Fix Bug #4 - Collection Deletion Issue
 **Problem**: Deleting a collection doesn't handle the prompts that belong to it. They become orphaned with invalid `collection_id`.
@@ -87,10 +87,10 @@ Use AI to explore and understand:
 **Problem**: There's no `PATCH /prompts/{id}` endpoint for partial updates.
 
 **Your job**:
-- [ ] Implement PATCH endpoint that allows partial updates
-- [ ] Only update fields that are provided
-- [ ] Don't require all fields like PUT does
-- [ ] Update `updated_at` timestamp
+- [x] Implement PATCH endpoint that allows partial updates
+- [x] Only update fields that are provided
+- [x] Don't require all fields like PUT does
+- [x] Update `updated_at` timestamp
 
 ### Deliverables
 
@@ -286,10 +286,10 @@ Choose ONE feature from your Week 2 specs:
 - Option B: **Tagging System**
 
 Follow TDD approach:
-1. [ ] Write failing tests first
-2. [ ] Implement minimum code to pass
-3. [ ] Refactor while keeping tests green
-4. [ ] Repeat until feature complete
+1. [x] Write failing tests first
+2. [x] Implement minimum code to pass
+3. [x] Refactor while keeping tests green
+4. [x] Repeat until feature complete
 
 #### Task 3.3: Set Up GitHub Actions CI
 Create `.github/workflows/ci.yml`:

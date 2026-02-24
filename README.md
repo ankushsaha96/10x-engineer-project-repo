@@ -97,8 +97,8 @@ All endpoints are prefixed with `/`.
 | Method | Endpoint | Description | Example Request Body/Params |
 | --- | --- | --- | --- |
 | `GET` | `/health` | Check API health | |
-| `GET` | `/prompts` | List all prompts | `?collection_id=<id>&search=<query>` |
-| `POST` | `/prompts` | Create a new prompt | `{ "title": "...", "content": "..." }` |
+| `GET` | `/prompts` | List all prompts | `?collection_id=<id>&search=<query>&tags=<tag1,tag2>` |
+| `POST` | `/prompts` | Create a new prompt | `{ "title": "...", "content": "...", "tags": ["tag1", "tag2"] }` |
 | `GET` | `/prompts/{prompt_id}` | Get a single prompt | |
 | `PUT` | `/prompts/{prompt_id}` | Update a prompt | `{ "title": "...", "content": "..." }` |
 | `PATCH`| `/prompts/{prompt_id}` | Partially update a prompt | `{ "title": "..." }` |
